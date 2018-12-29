@@ -1,0 +1,873 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Yet Another Node.js Blogg Application API",
+    "description": "Yet Another Node.js Blogg Application API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "Users",
+      "description": "API for users in the system"
+    },
+    {
+      "name": "Timezone",
+      "description": "API for the timezone in the system"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/user/signup": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Create new user in system",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to create",
+            "schema": {
+              "properties":{
+                "email": {
+                  "type": "string",
+                  "uniqueItems": true,
+                  "example": "test@gmail.com"
+                },
+                "password":{
+                  "type": "string",
+                  "example": "pass1234"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "full name"
+                },
+                "sex": {
+                  "type": "string",
+                  "enum": [
+                    "male",
+                    "female",
+                    "other"
+                  ],
+                  "example": "sex"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "consumer"
+                  ],
+                  "example": "consumer"
+                }
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "New user is created",
+            "schema": {
+              "$ref": "#/definitions/SuccessUserResponse"
+            }
+          },
+          "400": {
+            "description": "When user creation is failed",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Login the user",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to login",
+            "schema": {
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "inboxpk22@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "pass1234"
+                }
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged in success full",
+            "schema": {
+              "$ref": "#/definitions/SuccessUserResponse"
+            }
+          },
+          "400": {
+            "description": "Logged in failed",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "List of users",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page number, Default to Zero"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "single email or list of emails separated by comma and no space"
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "single role or list of roles separated by comma and no space"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "single status or list of status separated by comma an no space"
+          },
+          {
+            "name": "sex",
+            "in": "query",
+            "description": "single sex or list of sex separated by comma an no space"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of user with page size of 50",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/DetailedUser"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fetching failed",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "ID of user that we want to find",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user with given ID",
+        "responses": {
+          "200": {
+            "description": "User is found",
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/definitions/DetailedUser"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User is not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user with give ID",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User with new values of properties",
+            "schema": {
+              "$ref": "#/definitions/DetailedUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is Updates",
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/definitions/DetailedUser"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete":{
+        "tags":[
+          "Users"
+        ],
+        "summary": "Delete user with given ID ( only admin can )",
+        "responses": {
+          "200": {
+            "description": "User is Deleted",
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/definitions/DetailedUser"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User is not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Logout user",
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Email verification sent",
+            "schema": {
+              "$ref": "#definitions/SuccessUserResponse"
+            }
+          },
+          "400": {
+            "description": "Verification Failed",
+            "schema": {
+              "$ref": "#definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/verify_email": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Verify the email",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Email"
+          },
+          {
+            "name": "emailToken",
+            "in": "query",
+            "description": "Email Token sended via email"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Email verified",
+            "schema": {
+              "$ref": "#definitions/SuccessUserResponse"
+            }
+          },
+          "400": {
+            "description": "Verification Failed",
+            "schema": {
+              "$ref": "#definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/details": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get details of logged in user",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "User details",
+            "schema": {
+              "$ref": "#definitions/DetailedUser"
+            }
+          },
+          "400": {
+            "description": "User not logged in",
+            "schema": {
+              "$ref": "#definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/email_confirmation": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Request server to send email for Verification",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Email"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Email verification sent",
+            "schema": {
+              "$ref": "#definitions/SuccessUserResponse"
+            }
+          },
+          "400": {
+            "description": "Verification Failed",
+            "schema": {
+              "$ref": "#definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/password_reset": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Request for password reset Token to reset password",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Email"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Email verified",
+            "schema": {
+              "$ref": "#definitions/SuccessUserResponse"
+            }
+          },
+          "400": {
+            "description": "Verification Failed",
+            "schema": {
+              "$ref": "#definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "definitions": "Reset the password",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "inboxpk22@gmail.com",
+                  "description": "Enter your email"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "pass1234",
+                  "description": "new password"
+                },
+                "passwordToken": {
+                  "type": "string",
+                  "example": "12349583",
+                  "description": "Password reset token sent to your mail"
+                }
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Email verified",
+            "schema": {
+              "$ref": "#definitions/SuccessUserResponse"
+            }
+          },
+          "400": {
+            "description": "Verification Failed",
+            "schema": {
+              "$ref": "#definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/timezone": {
+      "post": {
+        "tags": [
+          "Timezone"
+        ],
+        "description": "Create a new Timezone with provided details",
+        "parameters": [
+          {
+            "name": "timezone",
+            "in": "body",
+            "description": "Timezone that we want to create",
+            "schema": {
+              "$ref": "#/definitions/Timezone"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "New timezone is created",
+            "schema": {
+              "$ref": "#/definitions/SuccessUserResponse"
+            }
+          },
+          "400": {
+            "description": "When timezone creation is failed",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/timezone/{timezoneId}": {
+      "parameters": [
+        {
+          "name": "timezoneId",
+          "in": "path",
+          "required": true,
+          "description": "ID of timezone that we want to find",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Timezone"
+        ],
+        "summary": "Get timezone details of the timezone with ID",
+        "responses": {
+          "200": {
+            "description": "Timezone is found",
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/definitions/Timezone"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Timezone is not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update timezone with given ID",
+        "tags": [
+          "Timezone"
+        ],
+        "parameters": [
+          {
+            "name": "timezone",
+            "in": "body",
+            "description": "Timezone with updates values",
+            "schema": {
+              "$ref": "#/definitions/Timezone"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Timezone is Updated",
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/definitions/Timezone"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Timezone is not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete":{
+        "summary": "Delete timezone with given ID",
+        "tags": ["Timezone"],
+        "responses": {
+          "200": {
+            "description": "Timezone is deleted",
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Timezone is not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/timezone/search": {
+      "post": {
+        "tags": [
+          "Timezone"
+        ],
+        "description": "Search timezone based on parameters",
+        "parameters": [
+          {
+            "name": "timezone",
+            "in": "body",
+            "description": "Search parameters",
+            "schema": {
+              "$ref": "#definitions/Timezone Search"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number , defaults to ZERO"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetched a list of timezones matching search params",
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#definitions/Timezone"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DetailedUser": {
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "email": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "name": {
+          "type": "string"
+        },
+        "sex": {
+          "type": "string",
+          "enum": [
+            "male",
+            "female",
+            "other"
+          ]
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "admin",
+            "consumer",
+            "manager"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "inactive"
+          ]
+        },
+        "jwt":{
+          "type":"string",
+          "example": "kewopfjewopfjnewfnewofnewfinewoinewinfeowinfewoinfew",
+          "description": "Authentication token either setup in cookie or headers for authentication"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "ISO Format date"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "ISO Format date"
+        }
+      }
+    },
+    "Timezone": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "India",
+          "description": "Name with length of range (10, 50)"
+        },
+        "GMTDifference":{
+          "type": "integer",
+          "example": "120",
+          "description": "Must be in minutes between -1440 and 1440 and multiple of 15"
+        },
+        "city":{
+          "type": "string",
+          "description": "City with length of range (10, 50)",
+          "example": "Gurgaon"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Valid ISO date , Not required for creating"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Valid ISO date, Not required for creating"
+        }
+      }
+    },
+    "Timezone Search": {
+      "properties": {
+        "GMTDifference": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "-120",
+            "+800"
+          ],
+          "description": "Search timezone in above GMTDifference range only"
+        },
+        "UserId":{
+          "type": "array",
+          "items":{
+            "type": "integer"
+          },
+          "example": [
+            12,45,67,87
+          ],
+          "description": "Search timezones for above users only , provided he can access their timezones"
+        },
+        "city": {
+          "type": "string",
+          "example": "new york",
+          "description": "Name of the city or part of the city name to search from"
+        },
+        "name": {
+          "type": "string",
+          "example": "my timezone",
+          "description": "Name of the timezone or part of the name to search from"
+        }
+      }
+    },
+    "SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "string"
+        }
+      }
+    },
+    "SuccessUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "description": "Success message"
+            }
+          }
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
