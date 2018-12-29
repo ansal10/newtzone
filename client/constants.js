@@ -1,0 +1,14 @@
+exports.appName = 'timeZoner';
+
+exports.Constants = {
+    MINIMUM_TIMEZONE: -14*60,
+    MAXIMUM_TIMEZONE: 14*60,
+};
+
+exports.actions = {
+    FETCH_TIMEZONE: 'FETCH_TIMEZONE',
+    FETCH_TIMEZONES: 'FETCH_TIMEZONES',
+    FETCH_USER_DATA: 'FETCH_USER_DATA',
+    FETCH_OTHER_USER_DATA: 'FETCH_OTHER_USER_DATA',
+    CLEAR_USER_DATA: 'CLEAR_USER_DATA',
+}
