@@ -133,15 +133,17 @@ class UserProfile extends Component {
                                                 data={[ 'male', 'female' ]}/>
                                         </div>
 
-
-                                        <div className="form_row">
-                                            <Field
-                                                name="managerId"
-                                                type="number"
-                                                component={renderTextField}
-                                                label="Manager ID:"
-                                            />
-                                        </div>
+                                        {
+                                            Gen.isUserAdmin(currentUser) ? '' :
+                                                <div className="form_row">
+                                                    <Field
+                                                        name="managerId"
+                                                        type="number"
+                                                        component={renderTextField}
+                                                        label="Manager ID:"
+                                                    />
+                                                </div>
+                                        }
 
                                         {
                                             Gen.isUserAdmin(currentUser) ?  <div className="form_row">

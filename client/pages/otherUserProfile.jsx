@@ -111,7 +111,7 @@ class OtherUserProfile extends Component {
   }
 
     render() {
-      const { handleSubmit, currentUser } = this.props;
+      const { handleSubmit, currentUser, user } = this.props;
       return (
           <section className="contactPage_wrap">
           {this.head()}
@@ -167,15 +167,17 @@ class OtherUserProfile extends Component {
                                                 data={[ 'active', 'inactive' ]}/>
                                         </div>
 
-                                        <div className="form_row">
-                                            <Field
-                                                name="managerId"
-                                                type="number"
-                                                component={renderTextField}
-                                                label="Manager ID:"
-                                                placehoder="Optional"
-                                            />
-                                        </div>
+                                        {
+                                            Gen.isUserAdmin(user) ? '' :
+                                                <div className="form_row">
+                                                    <Field
+                                                        name="managerId"
+                                                        type="number"
+                                                        component={renderTextField}
+                                                        label="Manager ID:"
+                                                    />
+                                                </div>
+                                        }
 
                                         <div className="form_buttons">
                                             <LaddaButton

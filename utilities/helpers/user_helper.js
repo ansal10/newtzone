@@ -182,6 +182,7 @@ const updateUserDetails = async (updater, userArgs, userId) => {
     userArgs.managerId = userArgs.managerId || null;
     let newManagerId = userArgs.managerId || null;
     let newRole = userArgs.role || null;
+    let newStatus = userArgs.status || null;
     let newManager = userArgs.managerId ? await models.User.findOne({where: {id: newManagerId}}) : null;
 
     if (!user)
@@ -194,6 +195,13 @@ const updateUserDetails = async (updater, userArgs, userId) => {
                     status: false,
                     message: 'The person is manager to some users, role cannot be changed'
                 }
+        }
+
+        if (updater.id === user.id && user.status !== newStatus){
+            return {
+                status: false,
+                message: 'You cannot change status of yourself'
+            }
         }
 
         try {
