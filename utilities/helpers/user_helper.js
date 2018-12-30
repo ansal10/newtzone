@@ -181,11 +181,21 @@ const updateUserDetails = async (updater, userArgs, userId) => {
     let user = await models.User.findOne({where: {id: userId}});
     userArgs.managerId = userArgs.managerId || null;
     let newManagerId = userArgs.managerId || null;
+    let newRole = userArgs.role || null;
     let newManager = userArgs.managerId ? await models.User.findOne({where: {id: newManagerId}}) : null;
 
     if (!user)
         return {status: false, message: util.format(config.MESSAGES.RESOURCE_NOT_FOUND, userId)};
     if (await permission.canUpdateUser(updater, user)) {
+        if (user.role === 'manager' && newRole !== 'manager'){
+            let allManagesCount = await models.User.count({where: {managerId: user.id}});
+            if (allManagesCount > 0)
+                return {
+                    status: false,
+                    message: 'The person is manager to some users, role cannot be changed'
+                }
+        }
+
         try {
             let updateVals = {};
             let emailUpdate;
