@@ -26,7 +26,6 @@ const canUpdateUser = async( user1, user2 ) => {
 		return true;
 	}
 	return user1.role === "admin";
-
 };
 
 const canCreateTimezone = ( user ) => {
@@ -34,7 +33,9 @@ const canCreateTimezone = ( user ) => {
 };
 
 const canSeeUserDetails = ( user1, user2 ) => {
-	if (user1.id === user2.id) {// can see his details
+	if (user1.id === user2.id) { // can edit himself{
+		return true;
+	} else if (user1.role === "manager" && user2.managerId === user1.id ) {
 		return true;
 	}
 	return user1.role === "admin";
