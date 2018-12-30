@@ -71,7 +71,7 @@ describe('Users', async () => {
         it('should update user details', async () => {
             let res = await authenticatedUser
                 .put('/api/v1/user/'+user.id)
-                .send({sex:'other'});
+                .send({sex:'male', status: user.status});
             res.should.have.status(200);
         });
 
