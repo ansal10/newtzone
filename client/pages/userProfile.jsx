@@ -37,13 +37,13 @@ class UserProfile extends Component {
     }
 
     logout(e) {
-        if(e)
-        e.preventDefault();
+        if (e)
+            e.preventDefault();
         this.props.clearUserDetails();
         this.props.history.push(`/login`);
     }
 
-    submit(data){
+    submit(data) {
         this.toggle();
         console.log(data);
         const {id} = this.props.user;
@@ -60,7 +60,7 @@ class UserProfile extends Component {
                 this.setState({
                     showForm: true
                 });
-                if(error.response.data && error.response.data.message) {
+                if (error.response.data && error.response.data.message) {
                     console.log(error.response.data.error.message);
                     notify.show(error.response.data.error.message, 'error');
                 }
@@ -71,133 +71,136 @@ class UserProfile extends Component {
                 });
             });
 
-  }
+    }
 
-  head(){
-    return (
-        <Helmet bodyAttributes={{class: "contactPage"}}>
-          <title>{`User Profile - ${appName}`}</title>
-        </Helmet>
-    );
-  }
+    head() {
+        return (
+            <Helmet bodyAttributes={{class: "contactPage"}}>
+                <title>{`User Profile - ${appName}`}</title>
+            </Helmet>
+        );
+    }
 
     render() {
-      const { handleSubmit, currentUser } = this.props;
+        const {handleSubmit, currentUser} = this.props;
 
-      return (
+        return (
 
-          <section className="contactPage_wrap">
-          {this.head()}
-            <InternalTextBanner Heading="User Profile" wrapperClass="contact" />
-            <ReactCSSTransitionGroup transitionName="anim" transitionAppear={true}  transitionAppearTimeout={5000} transitionEnter={false} transitionLeave={false}>
-            <div className="main anim-appear">
-                  <div className="grid">
-                      <div className="column column_12_12">
-                        <div className="content_block">
+            <section className="contactPage_wrap">
+                {this.head()}
+                <InternalTextBanner Heading="User Profile" wrapperClass="contact"/>
+                <ReactCSSTransitionGroup transitionName="anim" transitionAppear={true} transitionAppearTimeout={5000}
+                                         transitionEnter={false} transitionLeave={false}>
+                    <div className="main anim-appear">
+                        <div className="grid">
+                            <div className="column column_12_12">
+                                <div className="content_block">
 
-                             <form className="user-profile-container" onSubmit={handleSubmit(this.submit.bind(this))}>
+                                    <form className="user-profile-container"
+                                          onSubmit={handleSubmit(this.submit.bind(this))}>
 
-                                    <div className="form_wrap">
+                                        <div className="form_wrap">
 
-                                        <div className="form_row">
-                                            <Field
-                                                name="id"
-                                                readOnly="true"
-                                                component={renderTextField}
-                                                label="ID:"
-                                            />
-                                        </div>
-
-                                        <div className="form_row">
-                                            <Field
-                                                name="name"
-                                                component={renderTextField}
-                                                label="Name:"
-                                            />
-                                        </div>
-
-
-                                        <div className="form_row">
-                                            <Field
-                                                name="email"
-                                                component={renderTextField}
-                                                label="Email:"
-                                            />
-                                        </div>
-
-                                        <div className="form_row">
-                                            <Field
-                                                name="sex"
-                                                component={renderDropdownList}
-                                                label="Sex:"
-                                                data={[ 'male', 'female' ]}/>
-                                        </div>
-
-                                        {
-                                            Gen.isUserAdmin(currentUser) ? '' :
-                                                <div className="form_row">
-                                                    <Field
-                                                        name="managerId"
-                                                        type="number"
-                                                        component={renderTextField}
-                                                        label="Manager ID:"
-                                                    />
-                                                </div>
-                                        }
-
-                                        {
-                                            Gen.isUserAdmin(currentUser) ?  <div className="form_row">
+                                            <div className="form_row">
                                                 <Field
-                                                    name="status"
+                                                    name="id"
+                                                    readOnly="true"
+                                                    component={renderTextField}
+                                                    label="ID:"
+                                                />
+                                            </div>
+
+                                            <div className="form_row">
+                                                <Field
+                                                    name="name"
+                                                    component={renderTextField}
+                                                    label="Name:"
+                                                />
+                                            </div>
+
+
+                                            <div className="form_row">
+                                                <Field
+                                                    name="email"
+                                                    component={renderTextField}
+                                                    label="Email:"
+                                                />
+                                            </div>
+
+                                            <div className="form_row">
+                                                <Field
+                                                    name="sex"
                                                     component={renderDropdownList}
-                                                    label="Status:"
-                                                    data={[ 'active', 'inactive' ]}/>
-                                            </div>: ''
-                                        }
+                                                    label="Sex:"
+                                                    data={['male', 'female', 'other']}/>
+                                            </div>
+
+                                            {
+                                                Gen.isUserManagerOrAdmin(currentUser) ? '' :
+                                                    <div className="form_row">
+                                                        <Field
+                                                            name="managerId"
+                                                            type="number"
+                                                            component={renderTextField}
+                                                            label="Manager ID:"
+                                                        />
+                                                    </div>
+                                            }
+
+                                            {
+                                                Gen.isUserAdmin(currentUser) ? <div className="form_row">
+                                                    <Field
+                                                        name="status"
+                                                        component={renderDropdownList}
+                                                        label="Status:"
+                                                        data={['active', 'inactive']}/>
+                                                </div> : ''
+                                            }
 
 
-                                        <div className="form_buttons">
-                                            <LaddaButton
-                                                type="submit"
-                                                className="btn first"
-                                                loading={this.state.loading}
-                                                data-color="#eee"
-                                                data-size={XL}
-                                                data-style={SLIDE_UP}
-                                                data-spinner-size={30}
-                                                data-spinner-color="#ddd"
-                                                data-spinner-lines={12}
-                                            >
-                                                Update Profile
-                                            </LaddaButton>
+                                            <div className="form_buttons">
+                                                <LaddaButton
+                                                    type="submit"
+                                                    className="btn first"
+                                                    loading={this.state.loading}
+                                                    data-color="#eee"
+                                                    data-size={XL}
+                                                    data-style={SLIDE_UP}
+                                                    data-spinner-size={30}
+                                                    data-spinner-color="#ddd"
+                                                    data-spinner-lines={12}
+                                                >
+                                                    Update Profile
+                                                </LaddaButton>
+                                            </div>
+
+                                            <Link className="logout-link" to="/"
+                                                  onClick={this.logout.bind(this)}>Logout</Link>
+
                                         </div>
 
-                                        <Link className="logout-link" to="/" onClick={this.logout.bind(this)}>Logout</Link>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ReactCSSTransitionGroup>
 
-                                    </div>
+            </section>
 
-                            </form>
-                      </div>
-                  </div>
-              </div>
-            </div>
-              </ReactCSSTransitionGroup>
-
-          </section>
-
-      );
+        );
     }
-  }
+}
 
 
 UserProfile = reduxForm({
-      form: 'userProfileForm',
-      validate,
-      enableReinitialize: true,
-  })(UserProfile);
+    form: 'userProfileForm',
+    validate,
+    enableReinitialize: true,
+})(UserProfile);
 
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
     return {
         user: state.user,
         initialValues: state.user,
@@ -206,5 +209,5 @@ function mapStateToProps(state){
 };
 
 export default {
-  component: withRouter(connect(mapStateToProps, {clearUserDetails})(UserProfile))
+    component: withRouter(connect(mapStateToProps, {clearUserDetails})(UserProfile))
 };

@@ -43,7 +43,7 @@ class Filter extends Component {
             dataCopy.UserId = [];
         }
 
-        dataCopy.time = [data.fromTime ? Gen.getTimeZoneInMinutesFromString(data.fromTime) : Constants.MINIMUM_TIMEZONE, data.toTime ? Gen.getTimeZoneInMinutesFromString(data.toTime): Constants.MAXIMUM_TIMEZONE];
+        dataCopy.GMTDifference = [data.fromTime ? Gen.getTimeZoneInMinutesFromString(data.fromTime) : Constants.MINIMUM_TIMEZONE, data.toTime ? Gen.getTimeZoneInMinutesFromString(data.toTime): Constants.MAXIMUM_TIMEZONE];
 
         this.props.applyFilter(dataCopy);
     }
